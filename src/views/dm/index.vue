@@ -21,9 +21,9 @@
 
         <!-- 列表 -->
         <el-card class="!border-none mt-4" shadow="never">
-            <div class="mb-4 flex justify-end">
+            <div class="mb-4 flex justify-start">
                 <el-button type="primary" @click="handleAdd">
-                    <template #icon><icon name="plus" :size="14" /></template>
+                    <template #icon><icon name="el-icon-Plus" :size="14" /></template>
                     新建DM
                 </el-button>
             </div>
@@ -164,7 +164,7 @@
                             class="avatar-preview"
                         />
                         <div v-else class="avatar-placeholder">
-                            <icon name="plus" :size="20" />
+                            <icon name="shangchuanzhaopian" :size="20" />
                             <div class="mt-1 text-xs">点击上传</div>
                         </div>
                     </el-upload>
@@ -179,7 +179,10 @@
                         :on-remove="handleCarouselRemove"
                     >
                         <template #default>
-                            <icon name="plus" :size="20" />
+                            <div class="flex flex-col items-center justify-center text-gray-400">
+                                <icon name="shangchuanzhaopian" :size="20" />
+                                <div class="text-xs mt-1">上传图片</div>
+                            </div>
                         </template>
                     </el-upload>
                     <div class="text-xs text-tx-secondary mt-1">
