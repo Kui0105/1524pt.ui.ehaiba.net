@@ -179,14 +179,11 @@
                         :on-remove="handleCarouselRemove"
                     >
                         <template #default>
-                            <div class="flex flex-col items-center justify-center text-gray-400">
-                                <icon name="shangchuanzhaopian" :size="20" />
-                                <div class="text-xs mt-1">上传图片</div>
-                            </div>
+                            <icon name="shangchuanzhaopian" :size="20" />
                         </template>
                     </el-upload>
                     <div class="text-xs text-tx-secondary mt-1">
-                        建议尺寸 750×400，最多上传 9 张
+                        点击或拖拽上传图片，建议尺寸 750×400，最多上传 9 张
                     </div>
                 </el-form-item>
                 <el-form-item label="状态" prop="status">
