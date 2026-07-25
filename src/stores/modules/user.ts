@@ -71,7 +71,11 @@ const useUserStore = defineStore({
                     .then((data) => {
                         this.userInfo = data.user
                         this.perms = data.permissions
-                        this.routes = filterAsyncRoutes(injectLeaderboardAfterWorkbench(data.menu))
+                        this.routes = filterAsyncRoutes(
+                            injectDmAfterLeaderboard(
+                                injectLeaderboardAfterWorkbench(data.menu)
+                            )
+                        )
                         resolve(data)
                     })
                     .catch((error) => {
@@ -125,6 +129,36 @@ function injectLeaderboardAfterWorkbench(menu: any[]) {
     } else {
         // 兜底：找不到工作台时追加到末尾，保证可见
         menu.push(leaderboard)
+    }
+    return menu
+}
+
+// ============ 前端注入「DM管理」菜单（顶级菜单，排在「榜单管理」下方，不走后端接口）============
+// 说明：仅在后端「权限管理-菜单」尚未配置DM管理时使用；若后端已配置，请移除此注入以免菜单重复。
+function buildDmMenu() {
+    return {
+        paths: 'dm',
+        name: 'DM管理',
+        type: MenuEnum.MENU,
+        component: 'dm/index',
+        is_show: 1,
+        is_cache: 0
+    }
+}
+
+// 把「DM管理」作为顶级菜单，插入到「榜单管理」菜单项的正下方（与其同级，不嵌套）
+function injectDmAfterLeaderboard(menu: any[]) {
+    const dm = buildDmMenu()
+    const lbIndex = menu.findIndex(
+        (n) => n.name === '榜单管理' || (n.paths || '').toLowerCase().includes('leaderboard')
+    )
+    if (lbIndex !== -1) {
+        // 复用「榜单管理」图标，视觉统一
+        dm.icon = menu[lbIndex].icon
+        menu.splice(lbIndex + 1, 0, dm)
+    } else {
+        // 兜底：找不到榜单管理时追加到末尾
+        menu.push(dm)
     }
     return menu
 }
