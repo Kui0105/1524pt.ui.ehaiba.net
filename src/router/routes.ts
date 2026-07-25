@@ -52,30 +52,6 @@ export const constantRoutes: Array<RouteRecordRaw> = [
     {
         path: '/decoration/pc_details',
         component: () => import('@/views/decoration/pc_details.vue')
-    },
-    {
-        path: '/leaderboard',
-        component: LAYOUT,
-        children: [
-            {
-                path: 'index',
-                component: () => import('@/views/leaderboard/index.vue'),
-                name: Symbol('leaderboard'),
-                meta: {
-                    title: '榜单管理'
-                }
-            },
-            {
-                path: 'detail',
-                component: () => import('@/views/leaderboard/detail.vue'),
-                name: Symbol('leaderboard-detail'),
-                meta: {
-                    title: '查看榜单',
-                    activeMenu: '/leaderboard/index',
-                    hideTab: false
-                }
-            }
-        ]
     }
     // {
     //     path: '/dev_tools',
