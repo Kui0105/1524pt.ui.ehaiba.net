@@ -332,7 +332,9 @@ const statusTagType = (s: Status): '' | 'success' | 'warning' | 'info' => {
 // ====== 操作：查看/编辑/提前开始/提前结束/删除 ======
 const router = useRouter()
 const goDetail = (row: BoardItem) => {
-    router.push({ path: '/leaderboard/detail', query: { id: row.id } })
+    // 基于当前路由动态拼接详情路径，兼容「榜单管理」挂在任意层级(如 /leaderboard 或 /workbench/leaderboard)
+    const base = router.currentRoute.value.path.replace(/\/+$/, '')
+    router.push({ path: `${base}/detail`, query: { id: row.id } })
 }
 
 const handleAdvance = async (row: BoardItem, type: 'start' | 'end') => {
