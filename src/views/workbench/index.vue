@@ -8,8 +8,11 @@
                 <div
                     v-for="item in statCards"
                     :key="item.label"
-                    class="rounded-lg px-5 py-6 flex flex-col"
-                    :style="{ background: item.bg }"
+                    class="stat-card rounded-xl px-5 py-6 flex flex-col"
+                    :style="{
+                        background: item.bg,
+                        boxShadow: `0 8px 20px -6px ${item.glow}`
+                    }"
                 >
                     <div class="text-sm text-white/80">{{ item.label }}</div>
                     <div class="text-3xl font-semibold text-white mt-2">
@@ -112,25 +115,29 @@ const statCards = [
         label: '在册DM数',
         value: '128',
         tip: '当前有效 DM 总人数',
-        bg: 'linear-gradient(135deg, #5b8def 0%, #6fa8ff 100%)'
+        bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        glow: 'rgba(102, 126, 234, 0.35)'
     },
     {
         label: '本期打赏积分数',
         value: '86,420',
         tip: '进行中 DM 榜单打赏积分总额',
-        bg: 'linear-gradient(135deg, #36cbcb 0%, #5ce0d4 100%)'
+        bg: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)',
+        glow: 'rgba(56, 239, 125, 0.32)'
     },
     {
         label: '累计打赏积分数',
         value: '1,256,890',
         tip: '历史累计打赏积分',
-        bg: 'linear-gradient(135deg, #f0932b 0%, #ffb55c 100%)'
+        bg: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+        glow: 'rgba(245, 87, 108, 0.32)'
     },
     {
         label: '在册剧本数',
         value: '56',
         tip: '当前在售剧本数',
-        bg: 'linear-gradient(135deg, #9b59b6 0%, #c39bd3 100%)'
+        bg: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+        glow: 'rgba(79, 172, 254, 0.32)'
     }
 ]
 
@@ -231,4 +238,12 @@ const recentReward = [
 ]
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.stat-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 28px -8px rgba(0, 0, 0, 0.22);
+    }
+}
+</style>
