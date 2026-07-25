@@ -332,8 +332,8 @@ const statusTagType = (s: Status): '' | 'success' | 'warning' | 'info' => {
 // ====== 操作：查看/编辑/提前开始/提前结束/删除 ======
 const router = useRouter()
 const goDetail = (row: BoardItem) => {
-    // 基于当前路由动态拼接详情路径，兼容「榜单管理」挂在任意层级(如 /leaderboard 或 /workbench/leaderboard)
-    const base = router.currentRoute.value.path.replace(/\/+$/, '')
+    // 「榜单列表」路径为 .../index, 详情为 .../detail, 兼容「榜单管理」挂在任意层级
+    const base = router.currentRoute.value.path.replace(/\/index$/, '')
     router.push({ path: `${base}/detail`, query: { id: row.id } })
 }
 
