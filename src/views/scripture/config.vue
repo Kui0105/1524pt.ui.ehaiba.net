@@ -102,6 +102,7 @@
                                 maxlength="30"
                             />
                         </el-form-item>
+                        <!-- 微信二维码（暂时注释，后续按需启用）
                         <el-form-item label="微信二维码" prop="wxQrcode">
                             <el-upload
                                 :show-file-list="false"
@@ -122,6 +123,7 @@
                                 支持 jpg / png，建议尺寸 200×200
                             </div>
                         </el-form-item>
+                        -->
                         <el-form-item>
                             <el-button
                                 type="primary"
@@ -254,8 +256,8 @@ const basicRules = {
     ]
 }
 const serviceRules = {
-    wxAccount: [{ required: true, message: '请填写客服微信号', trigger: 'blur' }],
-    wxQrcode: [{ required: true, message: '请上传微信二维码', trigger: 'change' }]
+    wxAccount: [{ required: true, message: '请填写客服微信号', trigger: 'blur' }]
+    // wxQrcode: [{ required: true, message: '请上传微信二维码', trigger: 'change' }]
 }
 const noticeRules = {
     busNotice: [{ required: true, message: '请填写专车公告', trigger: 'blur' }]
