@@ -190,13 +190,6 @@
                 </el-tab-pane>
             </el-tabs>
         </el-card>
-
-        <el-card class="!border-none mt-4" shadow="never">
-            <el-table :data="ruleRows" :show-header="true" class="rule-table">
-                <el-table-column label="规则" prop="rule" width="180" />
-                <el-table-column label="说明" prop="desc" />
-            </el-table>
-        </el-card>
     </div>
 </template>
 
@@ -206,14 +199,6 @@ import { ElMessage } from 'element-plus'
 
 // 当前 Tab
 const activeTab = ref('basic')
-
-// 规则说明
-const ruleRows = [
-    {
-        rule: '地图经纬度',
-        desc: '平台管理员配置第三方地图API，门店精确定位坐标经纬度'
-    }
-]
 
 // 表单数据
 const formData = reactive({
@@ -355,15 +340,6 @@ const handleQrcodeChange = (file: any) => {
     }
     .config-form {
         max-width: 640px;
-    }
-    .rule-table {
-        :deep(th.el-table__cell) {
-            background-color: var(--el-color-primary);
-            color: #fff;
-        }
-        :deep(th.el-table__cell .cell) {
-            color: #fff;
-        }
     }
     .region-row {
         display: flex;

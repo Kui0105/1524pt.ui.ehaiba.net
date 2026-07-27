@@ -223,12 +223,12 @@ function injectScriptureAfterDm(menu: any[]) {
     return menu
 }
 
-// ============ 前端注入「剧本配置」菜单（顶级菜单，排在「剧本管理」下方，不走后端接口）============
-// 说明：仅在后端「权限管理-菜单」尚未配置剧本配置时使用；若后端已配置，请移除此注入以免菜单重复。
+// ============ 前端注入「门店配置」菜单（顶级菜单，排在「剧本管理」下方，不走后端接口）============
+// 说明：仅在后端「权限管理-菜单」尚未配置门店配置时使用；若后端已配置，请移除此注入以免菜单重复。
 function buildScriptureConfigMenu() {
     return {
         paths: 'scripture-config',
-        name: '剧本配置',
+        name: '门店配置',
         type: MenuEnum.MENU,
         component: 'scripture/config',
         is_show: 1,
@@ -236,7 +236,7 @@ function buildScriptureConfigMenu() {
     }
 }
 
-// 把「剧本配置」作为顶级菜单，插入到「剧本管理」菜单项的正下方（与其同级，不嵌套）
+// 把「门店配置」作为顶级菜单，插入到「剧本管理」菜单项的正下方（与其同级，不嵌套）
 function injectScriptureConfigAfterScripture(menu: any[]) {
     const scConfig = buildScriptureConfigMenu()
     const scIndex = menu.findIndex(
