@@ -90,49 +90,44 @@ const useUserStore = defineStore({
     }
 })
 
-// ============ 前端注入「榜单管理」菜单（顶级分类，排在「工作台」下方，不走后端接口）============
+// ============ 前端注入「榜单管理」菜单（顶级菜单，排在「工作台」下方，不走后端接口）============
 // 说明：仅在后端「权限管理-菜单」尚未配置榜单管理时使用；若后端已配置，请移除此注入以免菜单重复。
-function buildLeaderboardMenu(listActivePath: string) {
-    return {
-        paths: 'leaderboard',
-        name: '榜单管理',
-        type: MenuEnum.CATALOGUE,
-        is_show: 1,
-        is_cache: 0,
-        children: [
-            {
-                paths: 'index',
-                name: '榜单列表',
-                type: MenuEnum.MENU,
-                component: 'leaderboard/index',
-                is_show: 1,
-                is_cache: 0
-            },
-            {
-                paths: 'detail',
-                name: '查看榜单',
-                type: MenuEnum.MENU,
-                component: 'leaderboard/detail',
-                is_show: 0,
-                selected: listActivePath
-            }
-        ]
-    }
+// 榜单管理直接展示「榜单列表」内容（本身即列表页），无需展开再点击子项。
+// 查看榜单（详情）作为隐藏路由单独注册，供列表页「查看」跳转使用。
+function buildLeaderboardMenu() {
+    return [
+        {
+            paths: 'leaderboard',
+            name: '榜单管理',
+            type: MenuEnum.MENU,
+            component: 'leaderboard/index',
+            is_show: 1,
+            is_cache: 0
+        },
+        {
+            paths: 'leaderboard/detail',
+            name: '查看榜单',
+            type: MenuEnum.MENU,
+            component: 'leaderboard/detail',
+            is_show: 0,
+            selected: '/leaderboard'
+        }
+    ]
 }
 
-// 把「榜单管理」作为顶级分类，插入到「工作台」菜单项的正下方（与其同级，不嵌套）
+// 把「榜���管理」作为顶级菜单，插入到「工作台」菜单项的正下方（与其同级，不嵌套）
 function injectLeaderboardAfterWorkbench(menu: any[]) {
-    const leaderboard = buildLeaderboardMenu('/leaderboard/index')
+    const leaderboardEntries = buildLeaderboardMenu()
     const wbIndex = menu.findIndex(
         (n) => n.name === '工作台' || (n.paths || '').toLowerCase().includes('workbench')
     )
     if (wbIndex !== -1) {
         // 复用「工作台」图标，视觉统一；插到工作台之后
-        leaderboard.icon = menu[wbIndex].icon
-        menu.splice(wbIndex + 1, 0, leaderboard)
+        leaderboardEntries[0].icon = menu[wbIndex].icon
+        menu.splice(wbIndex + 1, 0, ...leaderboardEntries)
     } else {
         // 兜底：找不到工作台时追加到末尾，保证可见
-        menu.push(leaderboard)
+        menu.push(...leaderboardEntries)
     }
     return menu
 }
