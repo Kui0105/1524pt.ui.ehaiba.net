@@ -27,7 +27,28 @@
             </div>
             <el-table :data="pagedList" v-loading="loading" stripe>
                 <el-table-column label="分类ID" prop="id" width="90" />
-                <el-table-column label="分类名称" prop="name" min-width="160" />
+                <el-table-column label="分类名称" min-width="180">
+                    <template #default="{ row }">
+                        <span :class="row.parentId === null ? 'fw-600' : 'pl-4 text-tx-secondary'">
+                            {{ row.parentId === null ? '' : '└ ' }}{{ row.name }}
+                        </span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="上级分类" min-width="140">
+                    <template #default="{ row }">
+                        {{ getParentName(row.parentId) }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="层级" width="90">
+                    <template #default="{ row }">
+                        <el-tag
+                            :type="row.parentId === null ? 'warning' : 'primary'"
+                            size="small"
+                        >
+                            {{ row.parentId === null ? '一级' : '二级' }}
+                        </el-tag>
+                    </template>
+                </el-table-column>
                 <el-table-column label="状态" width="100">
                     <template #default="{ row }">
                         <el-tag :type="row.status === 1 ? 'success' : 'info'" size="small">
@@ -70,6 +91,24 @@
                 :rules="formRules"
                 label-width="100px"
             >
+                <el-form-item label="上级分类" prop="parentId">
+                    <el-select
+                        v-model="formData.parentId"
+                        placeholder="不选则为一级分类"
+                        clearable
+                        class="!w-full"
+                    >
+                        <el-option
+                            v-for="p in parentCandidates"
+                            :key="p.id"
+                            :label="p.name"
+                            :value="p.id"
+                        />
+                    </el-select>
+                    <div class="text-xs text-tx-secondary mt-1">
+                        不选则为一级分类；选择后为该分类下的二级分类
+                    </div>
+                </el-form-item>
                 <el-form-item label="分类名称" prop="name">
                     <el-input
                         v-model.trim="formData.name"
@@ -106,7 +145,13 @@
 import { computed, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-import { categoryList, scriptList, type CategoryItem } from './store'
+import {
+    categoryList,
+    scriptList,
+    getLevel1Categories,
+    getParentName,
+    type CategoryItem
+} from './store'
 
 // 顶部筛选
 const searchForm = reactive({ keyword: '' })
@@ -142,9 +187,15 @@ const formRef = ref()
 
 const blankForm = () => ({
     name: '',
+    parentId: undefined as number | undefined,
     status: 1 as 0 | 1
 })
 const formData = reactive(blankForm())
+
+// 父级候选：仅一级分类，编辑时排除自身
+const parentCandidates = computed(() =>
+    getLevel1Categories(editingId.value ?? undefined)
+)
 
 const formRules = {
     name: [
@@ -178,7 +229,11 @@ const handleAdd = () => {
 const handleEdit = (row: CategoryItem) => {
     dialogMode.value = 'edit'
     editingId.value = row.id
-    Object.assign(formData, { name: row.name, status: row.status })
+    Object.assign(formData, {
+        name: row.name,
+        parentId: row.parentId,
+        status: row.status
+    })
     dialogVisible.value = true
 }
 
@@ -201,6 +256,7 @@ const submitForm = async () => {
         categoryList.unshift({
             id: newId,
             name: formData.name.trim(),
+            parentId: formData.parentId ?? null,
             status: formData.status,
             createTime: now
         })
@@ -211,6 +267,7 @@ const submitForm = async () => {
             categoryList[idx] = {
                 ...categoryList[idx],
                 name: formData.name.trim(),
+                parentId: formData.parentId ?? null,
                 status: formData.status
             }
         }
@@ -220,13 +277,16 @@ const submitForm = async () => {
     dialogVisible.value = false
 }
 
-// 删除：若存在关联剧本则无法删除（业务规则）
+// 删除：若存在关联剧本或存在下级分类，则无法删除（业务规则）
 const handleDelete = (row: CategoryItem) => {
-    const relatedCount = scriptList.filter((s) => s.categoryId === row.id).length
-    if (relatedCount > 0) {
-        ElMessage.error(
-            `分类「${row.name}」存在 ${relatedCount} 部关联剧本，无法删除`
-        )
+    const relatedScripts = scriptList.filter((s) => s.categoryId === row.id).length
+    if (relatedScripts > 0) {
+        ElMessage.error(`分类「${row.name}」存在 ${relatedScripts} 部关联剧本，无法删除`)
+        return
+    }
+    const childCount = categoryList.filter((c) => c.parentId === row.id).length
+    if (childCount > 0) {
+        ElMessage.error(`分类「${row.name}」存在 ${childCount} 个下级分类，无法删除`)
         return
     }
     ElMessageBox.confirm(
@@ -246,10 +306,12 @@ const handleDelete = (row: CategoryItem) => {
         })
         .catch(() => {})
 }
-
 </script>
 
 <style lang="scss" scoped>
 .scripture-category {
+    .fw-600 {
+        font-weight: 600;
+    }
 }
 </style>

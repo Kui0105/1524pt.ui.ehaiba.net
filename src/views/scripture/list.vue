@@ -27,9 +27,9 @@
             </div>
             <el-table :data="pagedList" v-loading="loading" stripe>
                 <el-table-column label="剧本名称" prop="name" min-width="160" />
-                <el-table-column label="剧本分类" min-width="120">
+                <el-table-column label="剧本分类" min-width="160">
                     <template #default="{ row }">
-                        {{ getCategoryName(row.categoryId) }}
+                        {{ getCategoryPath(row.categoryId) }}
                     </template>
                 </el-table-column>
                 <el-table-column label="简介" prop="intro" min-width="240" show-overflow-tooltip />
@@ -185,6 +185,8 @@ import {
     categoryList,
     scheduleList,
     scriptList,
+    getLevel2Categories,
+    getParentName,
     type ScriptItem
 } from './store'
 
@@ -216,7 +218,15 @@ const handleReset = () => {
 // 工具
 const getCategoryName = (id: number) =>
     categoryList.find((c) => c.id === id)?.name || '-'
-const availableCategories = computed(() => categoryList)
+const getCategoryParent = (id: number) =>
+    categoryList.find((c) => c.id === id)?.parentId ?? null
+const getCategoryPath = (id: number) => {
+    const self = getCategoryName(id)
+    const parent = getParentName(getCategoryParent(id))
+    return parent === '-' ? self : `${parent} / ${self}`
+}
+// 剧本仅可关联二级分类
+const availableCategories = computed(() => getLevel2Categories())
 const availableSchedules = computed(() => scheduleList)
 
 // 弹窗状态
