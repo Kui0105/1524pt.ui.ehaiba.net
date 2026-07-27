@@ -80,17 +80,15 @@
                     />
                 </el-form-item>
                 <el-form-item label="开始时间" prop="startTime">
-                    <el-date-picker
+                    <el-time-picker
                         v-model="formData.startTime"
-                        type="datetime"
+                        format="HH:mm"
+                        value-format="HH:mm"
                         placeholder="选择开始时间"
-                        format="YYYY-MM-DD HH:mm"
-                        value-format="YYYY-MM-DD HH:mm"
-                        :time-format="'HH:mm'"
                         class="!w-full"
                     />
                     <div class="text-xs text-tx-secondary mt-1">
-                        24 小时制选择，可精确到分钟
+                        仅选择时:分（24 小时制）
                     </div>
                 </el-form-item>
                 <el-form-item label="状态" prop="status">

@@ -18,7 +18,7 @@ export interface CategoryItem {
 export interface ScheduleItem {
     id: number
     name: string
-    /** 精确到分钟：YYYY-MM-DD HH:mm */
+    /** 开始时间：仅时:分 HH:mm（24 小时制） */
     startTime: string
     status: Status
     createTime: string
@@ -74,18 +74,18 @@ const initCategories: CategoryItem[] = [
     { id: 52, name: '宋朝古风', parentId: 5, status: 1, createTime: nowCreate(23) }
 ]
 
-// 车次（精确到分钟，24h 制）
+// 车次（仅时:分，24h 制）
 const initSchedules: ScheduleItem[] = [
-    { id: 1, name: '周末晚场 A 段', startTime: '2026-07-25 19:30', status: 1, createTime: nowCreate(60) },
-    { id: 2, name: '周末晚场 B 段', startTime: '2026-07-25 21:30', status: 1, createTime: nowCreate(60) },
-    { id: 3, name: '周五黄金场', startTime: '2026-07-24 20:00', status: 1, createTime: nowCreate(58) },
-    { id: 4, name: '工作日午后场', startTime: '2026-07-23 14:00', status: 1, createTime: nowCreate(55) },
-    { id: 5, name: '七夕限定场', startTime: '2026-08-20 19:00', status: 1, createTime: nowCreate(50) },
-    { id: 6, name: '暑期新本体验场', startTime: '2026-08-05 15:30', status: 1, createTime: nowCreate(48) },
-    { id: 7, name: '深夜恐怖场', startTime: '2026-07-30 22:30', status: 0, createTime: nowCreate(40) },
-    { id: 8, name: '中秋团圆场', startTime: '2026-09-15 18:00', status: 1, createTime: nowCreate(35) },
-    { id: 9, name: '国庆七日连开场', startTime: '2026-10-01 10:00', status: 1, createTime: nowCreate(28) },
-    { id: 10, name: '新手友好日场', startTime: '2026-07-22 13:00', status: 1, createTime: nowCreate(20) }
+    { id: 1, name: '周末晚场 A 段', startTime: '19:30', status: 1, createTime: nowCreate(60) },
+    { id: 2, name: '周末晚场 B 段', startTime: '21:30', status: 1, createTime: nowCreate(60) },
+    { id: 3, name: '周五黄金场', startTime: '20:00', status: 1, createTime: nowCreate(58) },
+    { id: 4, name: '工作日午后场', startTime: '14:00', status: 1, createTime: nowCreate(55) },
+    { id: 5, name: '七夕限定场', startTime: '19:00', status: 1, createTime: nowCreate(50) },
+    { id: 6, name: '暑期新本体验场', startTime: '15:30', status: 1, createTime: nowCreate(48) },
+    { id: 7, name: '深夜恐怖场', startTime: '22:30', status: 0, createTime: nowCreate(40) },
+    { id: 8, name: '中秋团圆场', startTime: '18:00', status: 1, createTime: nowCreate(35) },
+    { id: 9, name: '国庆七日连开场', startTime: '10:00', status: 1, createTime: nowCreate(28) },
+    { id: 10, name: '新手友好日场', startTime: '13:00', status: 1, createTime: nowCreate(20) }
 ]
 
 // 剧本（categoryId 仅指向二级分类）
