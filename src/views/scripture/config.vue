@@ -95,6 +95,13 @@
                                 maxlength="30"
                             />
                         </el-form-item>
+                        <el-form-item label="妆造师微信" prop="makeupWx">
+                            <el-input
+                                v-model.trim="formData.makeupWx"
+                                placeholder="请填写妆造师微信号"
+                                maxlength="30"
+                            />
+                        </el-form-item>
                         <el-form-item label="微信二维码" prop="wxQrcode">
                             <el-upload
                                 :show-file-list="false"
@@ -210,6 +217,7 @@ const formData = reactive({
     lng: '116.474',
     lat: '39.908',
     wxAccount: 'haisenlin_dm',
+    makeupWx: 'haisenlin_makeup',
     wxQrcode: '',
     busNotice:
         '【专车服务】本店为距离 3 公里以上的玩家提供免费专车接送，请在开场前 1 小时于小程序预约。',
