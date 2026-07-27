@@ -8,17 +8,22 @@
                 <div
                     v-for="item in statCards"
                     :key="item.label"
-                    class="stat-card rounded-xl px-5 py-6 flex flex-col"
-                    :style="{
-                        background: item.bg,
-                        boxShadow: `0 8px 20px -6px ${item.glow}`
-                    }"
+                    class="stat-card rounded-xl px-5 py-5 flex flex-col"
                 >
-                    <div class="text-sm text-white/80">{{ item.label }}</div>
-                    <div class="text-3xl font-semibold text-white mt-2">
+                    <div class="flex items-center gap-2">
+                        <span
+                            class="stat-dot"
+                            :style="{ background: item.accent }"
+                        ></span>
+                        <span class="text-sm text-tx-secondary">{{ item.label }}</span>
+                    </div>
+                    <div
+                        class="text-3xl font-semibold mt-3"
+                        :style="{ color: item.accent }"
+                    >
                         {{ item.value }}
                     </div>
-                    <div class="text-xs text-white/70 mt-1">{{ item.tip }}</div>
+                    <div class="text-xs text-tx-secondary mt-1">{{ item.tip }}</div>
                 </div>
             </div>
         </el-card>
@@ -115,29 +120,25 @@ const statCards = [
         label: '在册DM数',
         value: '128',
         tip: '当前有效 DM 总人数',
-        bg: 'linear-gradient(135deg, #5B7CFA 0%, #6E5CF0 100%)',
-        glow: 'rgba(94, 110, 240, 0.40)'
+        accent: '#5B7CFA'
     },
     {
         label: '本期打赏积分数',
         value: '86,420',
         tip: '进行中 DM 榜单打赏积分总额',
-        bg: 'linear-gradient(135deg, #17C3B2 0%, #23D5AB 100%)',
-        glow: 'rgba(35, 213, 171, 0.40)'
+        accent: '#17C3B2'
     },
     {
         label: '累计打赏积分数',
         value: '1,256,890',
         tip: '历史累计打赏积分',
-        bg: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)',
-        glow: 'rgba(139, 92, 246, 0.40)'
+        accent: '#8B5CF6'
     },
     {
         label: '在册剧本数',
         value: '56',
         tip: '当前在售剧本数',
-        bg: 'linear-gradient(135deg, #F472B6 0%, #FB7185 100%)',
-        glow: 'rgba(244, 114, 182, 0.40)'
+        accent: '#F472B6'
     }
 ]
 
@@ -240,10 +241,19 @@ const recentReward = [
 
 <style lang="scss" scoped>
 .stat-card {
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    background: #fff;
+    border: 1px solid #eef0f4;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
     &:hover {
         transform: translateY(-4px);
-        box-shadow: 0 14px 28px -8px rgba(0, 0, 0, 0.22);
+        box-shadow: 0 10px 24px -10px rgba(31, 41, 55, 0.12);
+        border-color: #dfe3ea;
+    }
+    .stat-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
     }
 }
 </style>
