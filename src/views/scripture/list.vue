@@ -84,22 +84,40 @@
                     />
                 </el-form-item>
                 <el-form-item label="剧本分类" prop="categoryId">
-                    <el-select
-                        v-model="formData.categoryId"
-                        placeholder="请选择剧本分类"
-                        clearable
-                        class="!w-full"
-                    >
-                        <el-option
-                            v-for="c in availableCategories"
-                            :key="c.id"
-                            :label="c.name"
-                            :value="c.id"
-                            :disabled="c.status === 0"
-                        />
-                    </el-select>
+                    <div class="flex items-center gap-2 w-full">
+                        <el-select
+                            v-model="formData.parentCategoryId"
+                            placeholder="请选择一级分类"
+                            clearable
+                            class="!w-1/2"
+                            @change="onParentCategoryChange"
+                        >
+                            <el-option
+                                v-for="c in availableLevel1"
+                                :key="c.id"
+                                :label="c.name"
+                                :value="c.id"
+                                :disabled="c.status === 0"
+                            />
+                        </el-select>
+                        <el-select
+                            v-model="formData.categoryId"
+                            placeholder="请选择二级分类"
+                            clearable
+                            :disabled="!formData.parentCategoryId"
+                            class="!w-1/2"
+                        >
+                            <el-option
+                                v-for="c in availableLevel2"
+                                :key="c.id"
+                                :label="c.name"
+                                :value="c.id"
+                                :disabled="c.status === 0"
+                            />
+                        </el-select>
+                    </div>
                     <div class="text-xs text-tx-secondary mt-1">
-                        仅显示已启用分类，禁用分类无法被关联
+                        先选择一级分类，再选择其下的二级分类；仅显示已启用分类
                     </div>
                 </el-form-item>
                 <el-form-item label="简介" prop="intro">
@@ -185,7 +203,6 @@ import {
     categoryList,
     scheduleList,
     scriptList,
-    getLevel2Categories,
     getParentName,
     type ScriptItem
 } from './store'
@@ -225,8 +242,17 @@ const getCategoryPath = (id: number) => {
     const parent = getParentName(getCategoryParent(id))
     return parent === '-' ? self : `${parent} / ${self}`
 }
-// 剧本仅可关联二级分类
-const availableCategories = computed(() => getLevel2Categories())
+// 剧本分类：先选一级，再选其下二级
+const availableLevel1 = computed(() =>
+    categoryList.filter((c) => c.parentId === null)
+)
+const availableLevel2 = computed(() =>
+    categoryList.filter((c) => c.parentId === formData.parentCategoryId)
+)
+const onParentCategoryChange = () => {
+    // 一级变动时清空已选二级
+    formData.categoryId = undefined
+}
 const availableSchedules = computed(() => scheduleList)
 
 // 弹窗状态
@@ -238,6 +264,7 @@ const formRef = ref()
 
 const blankForm = () => ({
     name: '',
+    parentCategoryId: undefined as number | undefined,
     categoryId: undefined as number | undefined,
     intro: '',
     scheduleIds: [] as number[],
@@ -260,7 +287,10 @@ const formRules = {
             trigger: 'blur'
         }
     ],
-    categoryId: [{ required: true, message: '请选择剧本分类', trigger: 'change' }],
+    parentCategoryId: [
+        { required: true, message: '请先选择一级分类', trigger: 'change' }
+    ],
+    categoryId: [{ required: true, message: '请选择二级分类', trigger: 'change' }],
     intro: [{ required: true, message: '请输入简介', trigger: 'blur' }],
     scheduleIds: [
         {
@@ -295,8 +325,10 @@ const handleAdd = () => {
 const handleEdit = (row: ScriptItem) => {
     dialogMode.value = 'edit'
     editingId.value = row.id
+    const parentId = categoryList.find((c) => c.id === row.categoryId)?.parentId ?? null
     Object.assign(formData, {
         name: row.name,
+        parentCategoryId: parentId ?? undefined,
         categoryId: row.categoryId,
         intro: row.intro,
         scheduleIds: [...row.scheduleIds],

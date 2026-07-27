@@ -19,24 +19,30 @@
         </el-card>
 
         <el-card class="!border-none mt-4" shadow="never">
-            <div class="mb-4 flex justify-start">
+            <div class="mb-4 flex items-center justify-between">
                 <el-button type="primary" @click="handleAdd">
                     <template #icon><icon name="el-icon-Plus" :size="14" /></template>
                     新建分类
                 </el-button>
+                <div class="flex items-center gap-2">
+                    <el-button @click="expandAll(true)">展开全部</el-button>
+                    <el-button @click="expandAll(false)">折叠全部</el-button>
+                </div>
             </div>
-            <el-table :data="pagedList" v-loading="loading" stripe>
+            <el-table
+                ref="tableRef"
+                :data="treeData"
+                v-loading="loading"
+                row-key="id"
+                :tree-props="{ children: 'children' }"
+                stripe
+            >
                 <el-table-column label="分类ID" prop="id" width="90" />
-                <el-table-column label="分类名称" min-width="180">
+                <el-table-column label="分类名称" prop="name" min-width="200">
                     <template #default="{ row }">
-                        <span :class="row.parentId === null ? 'fw-600' : 'pl-4 text-tx-secondary'">
-                            {{ row.parentId === null ? '' : '└ ' }}{{ row.name }}
+                        <span :class="row.parentId === null ? 'fw-600' : 'text-tx-secondary'">
+                            {{ row.name }}
                         </span>
-                    </template>
-                </el-table-column>
-                <el-table-column label="上级分类" min-width="140">
-                    <template #default="{ row }">
-                        {{ getParentName(row.parentId) }}
                     </template>
                 </el-table-column>
                 <el-table-column label="层级" width="90">
@@ -64,17 +70,6 @@
                     </template>
                 </el-table-column>
             </el-table>
-
-            <div class="mt-4 flex justify-end">
-                <el-pagination
-                    v-model:current-page="page.current"
-                    v-model:page-size="page.size"
-                    :total="filteredList.length"
-                    :page-sizes="[10, 20, 50]"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    background
-                />
-            </div>
         </el-card>
 
         <!-- 新建/编辑弹窗 -->
@@ -149,7 +144,6 @@ import {
     categoryList,
     scriptList,
     getLevel1Categories,
-    getParentName,
     type CategoryItem
 } from './store'
 
@@ -157,25 +151,41 @@ import {
 const searchForm = reactive({ keyword: '' })
 const loading = ref(false)
 
-const filteredList = computed(() => {
+// 树形数据：二级分类挂在其一级分类 children 下
+const treeData = computed<CategoryItem[]>(() => {
     const kw = searchForm.keyword.trim()
-    if (!kw) return categoryList
-    return categoryList.filter((c) => c.name.includes(kw))
+    const parents = categoryList.filter((c) => c.parentId === null)
+    const result: CategoryItem[] = []
+    for (const p of parents) {
+        const allChildren = categoryList.filter((c) => c.parentId === p.id)
+        if (!kw) {
+            result.push({ ...p, children: allChildren.length ? allChildren : undefined })
+            continue
+        }
+        const parentMatch = p.name.includes(kw)
+        const matchedChildren = allChildren.filter((c) => c.name.includes(kw))
+        if (parentMatch) {
+            // 一级名称命中 → 展示该一级及其全部二级
+            result.push({ ...p, children: allChildren })
+        } else if (matchedChildren.length) {
+            // 仅二级名称命中 → 展示该一级及命中的二级
+            result.push({ ...p, children: matchedChildren })
+        }
+    }
+    return result
 })
 
-// 分页
-const page = reactive({ current: 1, size: 10 })
-const pagedList = computed(() => {
-    const start = (page.current - 1) * page.size
-    return filteredList.value.slice(start, start + page.size)
-})
-
-const handleSearch = () => {
-    page.current = 1
+// 展开 / 折叠全部
+const tableRef = ref()
+const expandAll = (expanded: boolean) => {
+    treeData.value.forEach((row) => {
+        tableRef.value?.toggleRowExpansion(row, expanded)
+    })
 }
+
+const handleSearch = () => {}
 const handleReset = () => {
     searchForm.keyword = ''
-    page.current = 1
 }
 
 // 弹窗状态

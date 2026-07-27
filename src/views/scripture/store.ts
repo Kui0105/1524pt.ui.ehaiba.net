@@ -11,6 +11,8 @@ export interface CategoryItem {
     parentId: number | null
     status: Status
     createTime: string
+    /** 树形展示用：二级分类挂在一级分类下 */
+    children?: CategoryItem[]
 }
 
 export interface ScheduleItem {
