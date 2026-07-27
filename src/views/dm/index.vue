@@ -179,7 +179,8 @@
                         :on-remove="handleCarouselRemove"
                     >
                         <template #default>
-                            <icon name="shangchuanzhaopian" :size="20" />
+                            <icon name="shangchuanzhaopian" :size="22" />
+                            <div class="upload-add-text">点击上传</div>
                         </template>
                     </el-upload>
                     <div class="text-xs text-tx-secondary mt-1">
@@ -525,8 +526,36 @@ const handleDelete = (row: DmItem) => {
     .avatar-preview {
         border: 1px solid #ebeef5;
     }
+    // 主页轮播图：宽幅 banner 形状（对应建议尺寸 750×400，比例 1.875:1）
     :deep(.el-upload--picture-card) {
-        --el-upload-picture-card-size: 90px;
+        --el-upload-picture-card-size: 96px;
+        width: 180px;
+        height: 96px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .upload-add-text {
+        margin-top: 4px;
+        font-size: 12px;
+        line-height: 1;
+        color: #909399;
+    }
+    // 已上传的轮播图缩略图与组件尺寸一致，避免变形
+    :deep(.el-upload-list--picture-card .el-upload-list__item) {
+        width: 180px;
+        height: 96px;
+        --el-upload-picture-card-size: 96px;
+    }
+    :deep(.el-upload-list--picture-card .el-upload-list__item-thumbnail) {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    // 轮播图与提示文字之间保持间距
+    :deep(.el-upload-list--picture-card) {
+        margin-top: 0;
     }
 }
 </style>
