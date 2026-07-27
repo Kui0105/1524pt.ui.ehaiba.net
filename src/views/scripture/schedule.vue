@@ -57,15 +57,6 @@
             </div>
         </el-card>
 
-        <!-- 规则说明 -->
-        <el-card class="!border-none mt-4" shadow="never">
-            <div class="rule-title">规则说明</div>
-            <el-table :data="ruleRows" :show-header="true" class="rule-table">
-                <el-table-column label="规则" prop="rule" width="180" />
-                <el-table-column label="说明" prop="desc" />
-            </el-table>
-        </el-card>
-
         <!-- 新建/编辑弹窗 -->
         <el-dialog
             v-model="dialogVisible"
@@ -280,28 +271,9 @@ const scriptListPatch = (scheduleId: number) => {
     })
 }
 
-// 规则说明
-const ruleRows = [
-    { rule: '状态', desc: '上架后可在选车详情展示该车次，下架后则不展示' },
-    { rule: '开始时间', desc: '24 小时制选择，可精确到分钟' }
-]
 </script>
 
 <style lang="scss" scoped>
 .scripture-schedule {
-    .rule-title {
-        font-weight: 600;
-        font-size: 14px;
-        margin-bottom: 12px;
-    }
-    .rule-table {
-        :deep(th.el-table__cell) {
-            background-color: var(--el-color-primary);
-            color: #fff;
-        }
-        :deep(th.el-table__cell .cell) {
-            color: #fff;
-        }
-    }
 }
 </style>

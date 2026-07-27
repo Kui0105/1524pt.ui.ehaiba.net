@@ -56,15 +56,6 @@
             </div>
         </el-card>
 
-        <!-- 规则说明 -->
-        <el-card class="!border-none mt-4" shadow="never">
-            <div class="rule-title">规则说明</div>
-            <el-table :data="ruleRows" :show-header="true" class="rule-table">
-                <el-table-column label="规则" prop="rule" width="180" />
-                <el-table-column label="说明" prop="desc" />
-            </el-table>
-        </el-card>
-
         <!-- 新建/编辑弹窗 -->
         <el-dialog
             v-model="dialogVisible"
@@ -256,28 +247,9 @@ const handleDelete = (row: CategoryItem) => {
         .catch(() => {})
 }
 
-// 规则说明
-const ruleRows = [
-    { rule: '删除', desc: '所选分类如存在关联剧本数据，则无法删除' },
-    { rule: '状态', desc: '启用则选车页展示该门店对应分类，禁用则不展示' }
-]
 </script>
 
 <style lang="scss" scoped>
 .scripture-category {
-    .rule-title {
-        font-weight: 600;
-        font-size: 14px;
-        margin-bottom: 12px;
-    }
-    .rule-table {
-        :deep(th.el-table__cell) {
-            background-color: var(--el-color-primary);
-            color: #fff;
-        }
-        :deep(th.el-table__cell .cell) {
-            color: #fff;
-        }
-    }
 }
 </style>
