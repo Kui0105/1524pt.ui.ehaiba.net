@@ -48,22 +48,7 @@
                                 placeholder="请输入详细地址"
                                 maxlength="60"
                                 show-word-limit
-                            >
-                                <template #append>
-                                    <el-button
-                                        :loading="searching"
-                                        @click="searchAddress"
-                                    >
-                                        <template #icon>
-                                            <icon name="el-icon-Search" :size="14" />
-                                        </template>
-                                        搜索
-                                    </el-button>
-                                </template>
-                            </el-input>
-                            <div class="text-xs text-tx-secondary mt-1">
-                                填写省/市/区与详细地址后点击搜索，将在地图定位
-                            </div>
+                            />
                         </el-form-item>
                         <el-form-item label="地图经纬度" prop="lng">
                             <div class="region-row">
@@ -78,37 +63,7 @@
                                     class="!w-1/2"
                                 />
                             </div>
-                            <div class="text-xs text-tx-secondary mt-1">
-                                平台管理员配置第三方地图 API 后回填门店经纬度坐标
-                            </div>
                         </el-form-item>
-                        <div class="map-block">
-                            <div class="map-label">
-                                <icon name="ditu" :size="16" />
-                                <span>腾讯地图</span>
-                            </div>
-                            <div
-                                class="map-box"
-                                :class="{ marked: mapMarked }"
-                                @click="onMapClick"
-                            >
-                                <template v-if="mapMarked">
-                                    <div class="map-pin">
-                                        <icon name="dingwei" :size="28" />
-                                    </div>
-                                    <div class="map-coord">
-                                        已定位：{{ mapCoord.lng }}, {{ mapCoord.lat }}
-                                    </div>
-                                    <div class="map-hint">点击地图获取经纬度并填入</div>
-                                </template>
-                                <template v-else>
-                                    <icon name="ditu" :size="30" />
-                                    <div class="map-tip">
-                                        点击「搜索」根据省市区及详细地址定位后，点击此处地图直接获取经纬度
-                                    </div>
-                                </template>
-                            </div>
-                        </div>
                         <el-form-item>
                             <el-button
                                 type="primary"
@@ -321,41 +276,6 @@ const serviceLoading = ref(false)
 const noticeLoading = ref(false)
 const ruleLoading = ref(false)
 
-// 腾讯地图（mock 定位，后续接入腾讯地图 API）
-const searching = ref(false)
-const mapMarked = ref(false)
-const mapCoord = reactive({ lng: 0, lat: 0 })
-
-// 根据省市区 + 详细地址搜索并定位到地图
-const searchAddress = () => {
-    if (!formData.province || !formData.city || !formData.district || !formData.address) {
-        ElMessage.warning('请先填写省 / 市 / 区与详细地址')
-        return
-    }
-    searching.value = true
-    // 模拟调用腾讯地图地理编码 API：地址 → 坐标
-    setTimeout(() => {
-        searching.value = false
-        const seed = (formData.province + formData.city + formData.district + formData.address)
-            .length
-        mapCoord.lng = +(116 + ((seed * 13) % 100) / 100).toFixed(6)
-        mapCoord.lat = +(39 + ((seed * 7) % 100) / 100).toFixed(6)
-        mapMarked.value = true
-        ElMessage.success('已在腾讯地图定位，点击地图获取经纬度')
-    }, 400)
-}
-
-// 点击地图直接获取经纬度填入
-const onMapClick = () => {
-    if (!mapMarked.value) {
-        ElMessage.warning('请先点击「搜索」根据地址在地图上定位')
-        return
-    }
-    formData.lng = mapCoord.lng.toFixed(6)
-    formData.lat = mapCoord.lat.toFixed(6)
-    ElMessage.success('已获取经纬度并填入')
-}
-
 // 模拟持久化
 const persist = (loading: { value: boolean }, msg: string) => {
     loading.value = true
@@ -428,75 +348,6 @@ const handleQrcodeChange = (file: any) => {
     }
     .config-form {
         max-width: 640px;
-    }
-    .map-block {
-        margin: 4px 0 8px;
-        .map-label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--el-text-color-primary);
-            margin-bottom: 10px;
-        }
-        .map-box {
-            position: relative;
-            height: 240px;
-            border: 1px solid #ebeef5;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #e8f3ff 0%, #f2f7fb 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            color: #909399;
-            cursor: pointer;
-            overflow: hidden;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            background-image: linear-gradient(rgba(64, 158, 255, 0.08) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(64, 158, 255, 0.08) 1px, transparent 1px);
-            background-size: 24px 24px;
-            &:hover {
-                border-color: var(--el-color-primary);
-                box-shadow: 0 2px 12px rgba(64, 158, 255, 0.15);
-            }
-            &.marked {
-                background: linear-gradient(135deg, #e6f7ec 0%, #f4fbf6 100%);
-                border-color: #67c23a;
-                cursor: pointer;
-            }
-            .map-tip {
-                max-width: 320px;
-                text-align: center;
-                font-size: 13px;
-                line-height: 1.6;
-            }
-            .map-pin {
-                color: #f56c6c;
-                animation: pin-drop 0.35s ease;
-            }
-            .map-coord {
-                font-weight: 600;
-                color: var(--el-color-success);
-                font-size: 14px;
-            }
-            .map-hint {
-                font-size: 12px;
-                color: #909399;
-            }
-        }
-    }
-    @keyframes pin-drop {
-        0% {
-            transform: translateY(-16px);
-            opacity: 0;
-        }
-        100% {
-            transform: translateY(0);
-            opacity: 1;
-        }
     }
     .region-row {
         display: flex;

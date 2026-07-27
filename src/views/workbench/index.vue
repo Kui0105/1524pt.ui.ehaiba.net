@@ -115,29 +115,29 @@ const statCards = [
         label: '在册DM数',
         value: '128',
         tip: '当前有效 DM 总人数',
-        bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        glow: 'rgba(102, 126, 234, 0.35)'
+        bg: 'linear-gradient(135deg, #5B7CFA 0%, #6E5CF0 100%)',
+        glow: 'rgba(94, 110, 240, 0.40)'
     },
     {
         label: '本期打赏积分数',
         value: '86,420',
         tip: '进行中 DM 榜单打赏积分总额',
-        bg: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)',
-        glow: 'rgba(56, 239, 125, 0.32)'
+        bg: 'linear-gradient(135deg, #17C3B2 0%, #23D5AB 100%)',
+        glow: 'rgba(35, 213, 171, 0.40)'
     },
     {
         label: '累计打赏积分数',
         value: '1,256,890',
         tip: '历史累计打赏积分',
-        bg: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-        glow: 'rgba(245, 87, 108, 0.32)'
+        bg: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)',
+        glow: 'rgba(139, 92, 246, 0.40)'
     },
     {
         label: '在册剧本数',
         value: '56',
         tip: '当前在售剧本数',
-        bg: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-        glow: 'rgba(79, 172, 254, 0.32)'
+        bg: 'linear-gradient(135deg, #F472B6 0%, #FB7185 100%)',
+        glow: 'rgba(244, 114, 182, 0.40)'
     }
 ]
 
