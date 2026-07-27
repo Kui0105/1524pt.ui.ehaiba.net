@@ -72,8 +72,10 @@ const useUserStore = defineStore({
                         this.userInfo = data.user
                         this.perms = data.permissions
                         this.routes = filterAsyncRoutes(
-                            injectDmAfterLeaderboard(
-                                injectLeaderboardAfterWorkbench(data.menu)
+                            injectScriptureAfterDm(
+                                injectDmAfterLeaderboard(
+                                    injectLeaderboardAfterWorkbench(data.menu)
+                                )
                             )
                         )
                         resolve(data)
@@ -159,6 +161,62 @@ function injectDmAfterLeaderboard(menu: any[]) {
     } else {
         // 兜底：找不到榜单管理时追加到末尾
         menu.push(dm)
+    }
+    return menu
+}
+
+// ============ 前端注入「剧本管理」菜单（顶级分类，排在「DM管理」下方，不走后端接口）============
+// 说明：仅在后端「权限管理-菜单」尚未配置剧本管理时使用；若后端已配置，请移除此注入以免菜单重复。
+// 剧本管理下包含三个子菜单：剧本列表 / 分类列表 / 车次列表
+function buildScriptureMenu() {
+    return {
+        paths: 'scripture',
+        name: '剧本管理',
+        type: MenuEnum.CATALOGUE,
+        is_show: 1,
+        is_cache: 0,
+        children: [
+            {
+                paths: 'list',
+                name: '剧本列表',
+                type: MenuEnum.MENU,
+                component: 'scripture/list',
+                is_show: 1,
+                is_cache: 0
+            },
+            {
+                paths: 'category',
+                name: '分类列表',
+                type: MenuEnum.MENU,
+                component: 'scripture/category',
+                is_show: 1,
+                is_cache: 0
+            },
+            {
+                paths: 'schedule',
+                name: '车次列表',
+                type: MenuEnum.MENU,
+                component: 'scripture/schedule',
+                is_show: 1,
+                is_cache: 0
+            }
+        ]
+    }
+}
+
+// 把「剧本管理」作为顶级分类，插入到「DM管理」菜单项的正下方（与其同级，不嵌套）
+function injectScriptureAfterDm(menu: any[]) {
+    const sc = buildScriptureMenu()
+    const dmIndex = menu.findIndex(
+        (n) => n.name === 'DM管理' || (n.paths || '').toLowerCase() === 'dm'
+    )
+    if (dmIndex !== -1) {
+        // 复用「DM管理」图标，视觉统一
+        sc.icon = menu[dmIndex].icon
+        menu.splice(dmIndex + 1, 0, sc)
+    } else {
+        // 兜底：找不到 DM 管理时追加到末尾
+        menu.push(sc)
     }
     return menu
 }
